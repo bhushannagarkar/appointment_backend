@@ -30,31 +30,46 @@ const adminIdentifier  = (req, res, next) => {
 };
 
 const doctorIdentifier = (req, res, next) => {
-    let token;
-    if (req.headers.client === 'not-browser') {
-        token = req.headers.authorization;
-    } else {
-        token = req.cookies['Authorization'];
-    }
+	let token;
+  
+	// Determine the token source (header or cookie)
+	if (req.headers.client === 'not-browser') {
+	  // If it's not a browser, get token from headers
+	  token = req.headers.authorization;
+	} else {
+	  // If it's a browser client, get the token from cookies
+	  token = req.cookies['Authorization'];
+	}
+  
+	// console.log("Cookies: Sushank", req.cookies);
+	// console.log("Headers: Sushank", req.headers);
+	// console.log("Authorization: Sushank", req.cookies.Authorization);
 
-    if (!token) {
-        return res.status(403).json({ success: false, message: 'Unauthorized' });
-    }
 
-    try {
-        const doctorToken = token.split(' ')[1];
-        const jwtVerified = jwt.verify(doctorToken, process.env.TOKEN_SECRET);
-        if (jwtVerified) {
-            req.doctor = jwtVerified; // Assuming jwt contains doctor-related data
-            next();
-        } else {
-            throw new Error('Invalid token');
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(403).json({ success: false, message: 'Error in catch block: invalid token' });
-    }
-};
+	// If no token is found, return unauthorized response
+	if (!token) {
+	  return res.status(403).json({ success: false, message: 'Unauthorized: No token provided' });
+	}
+  
+	try {
+	  // For header-based tokens, ensure it's in the "Bearer <token>" format
+	  const doctorToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
+  
+	  // Verify the token using the secret
+	  const jwtVerified = jwt.verify(doctorToken, process.env.TOKEN_SECRET);
+  
+	  if (jwtVerified) {
+		req.doctor = jwtVerified; // Attach the verified token payload (doctor data) to the request
+		next(); // Call the next middleware
+	  } else {
+		throw new Error('Token verification failed');
+	  }
+	} catch (error) {
+	  console.error('Token error:', error.message);
+	  return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+	}
+  };
+  
 
 
 export{

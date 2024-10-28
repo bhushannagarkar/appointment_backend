@@ -15,7 +15,18 @@ config({ path:'./config/config.env' });
 connectDB();
 connectCloudinary();
 
-app.use(cors());
+// app.use(cors());
+console.log(process.env.FRONTEND_URI,"frontend url")
+console.log(process.env.FRONTEND_URI_SECOND,"frontend url second")
+app.use(cors({origin:[process.env.FRONTEND_URI,process.env.FRONTEND_URI_SECOND,process.env.FRONTEND_URI_THIRD],
+  methods:["GET","POST","PUT","DELETE","PATCH"],
+  credentials: true,
+}));
+
+// app.use(cors({
+//   origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5174', 'http://127.0.0.1:5175'] // Correct format
+// })); 
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -31,4 +42,5 @@ app.get("/", (req, res) => {
   
 app.listen(process.env.PORT,()=>{
     console.log(`listening... on port ${process.env.PORT}`);
-})
+});
+config({ path: './config/config.env' });

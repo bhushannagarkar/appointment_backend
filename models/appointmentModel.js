@@ -1,41 +1,64 @@
 
 import mongoose  from "mongoose";
-
 const appointmentSchema = new mongoose.Schema({
-    userEmail: {
-        type: String,
-        required: true,
-    },
-    userName: {
-        type: String,
-        required: true,
-    },
-    doctorEmail: {
-        type: String,
-        required: true,
-    },
-    slotDate: {
-        type: String,
-        required: true,
-    },
-    slotTime: {
-        type: String,
-        required: true,
-    },
-    whatsAppNumber: {
-        type: String,
-        required: true,
-    },
-    doctorData: { type: Object, required: true },
-    date: { type: Number, required: true },
-    cancelled: { type: Boolean, default: false },
-    isCompleted: { type: Boolean, default: false },
-    rescheduled: { type: Boolean, default: false }, // New field to track if appointment has been rescheduled
-    rescheduledAt: { type: Date }, // New field to store reschedule timestamp
-},
-{
-    timestamps: true,
-});
+  //appointment number
+    appointmentNumber:{type:Number,required: true},
+    doctorObjectId: { type: String, required: true },
+   //patient information
+    patientEmailId: { type: String, required: true },
+    patientName:{ type: String, required: true },
+    patientMobileNo: { type: String, required: true },
+    patientWhatsappNo: { type: String, required: true },
+    patientLocation:{ type: String, required: true },
+    patientAddress:{ type: String, required: true },
+    patientProblemDesc:{ type: String, required: true },
+    patientPinCode:{ type: String, required: true },
+   //appoinment date and time
+    appointmentDate: { type: String, required: true },
+    appointmentTime: { type: String, required: true },
+    //appointment related time and dates
+    appointmentBookedDateTimeStamp:{type:Date},
+    appointmentCancelledDateTimeStamp:{type:Date},
+    appointmentRescheduledDateTimeStamp:{type:Date},
+    appointmentClosedDateTimeStamp:{type:Date},
+  //consent form read or not 
+    consentFormReadSignedAgreed:{ type: Boolean,required: true },
+    //sms utilities send or not 
+    sMSSent:{ type: Boolean, default: false },
+    whatsApp_Sent:{ type: Boolean, default: false },
+    emailSent:{ type: Boolean, default: false },
 
-const appointmentModel = mongoose.models.appointment || mongoose.model("appointment", appointmentSchema);
-export default appointmentModel;
+    doctorData: { type: Object, required: true },
+
+    date: { type: Number, required: true },
+    isAppointmentCancelled: { type: Boolean, default: false },
+    isappointmentClosed:{ type: Boolean, default: false },
+    isAppointmentRescheduled: { type: Boolean, default: false }, 
+
+    isAppointmentDiagnosised: { type: Boolean, default: false }, 
+
+    reasonForSwitchDoctor:{type:String},
+    // rescheduledAt: { type: Date }, 
+    isSwitchedDoctorDateTimeStamp: { type: Date }, 
+    isSwitchedDoctor: { type: Boolean, default: false }, 
+
+
+      // New field for tracking online or offline mode
+  isOnlineOrOffline: { 
+    type: String, 
+    enum: ["online", "offline"], 
+    required: true 
+  },
+
+    //for online tests 
+   onlineTestIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "onlineTest" }] 
+    //isonline or offline
+    // New field to track doctor switch
+}, { timestamps: true });
+
+// const appointmentModel = mongoose.models.appointment || mongoose.model("appointment", appointmentSchema);
+// export default appointmentModel;
+
+
+const Appointment = mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
+export default Appointment;

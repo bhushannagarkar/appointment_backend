@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const adminSchema = mongoose.Schema(
   {
-    email: {
+    adminEmailId: {
       type: String,
       required: [true, 'Email is required'],
       trim: true,
@@ -10,12 +10,39 @@ const adminSchema = mongoose.Schema(
       minLength: [6, 'Email must have 6 characters!'],
       lowercase: true,
     },
-    password: {
+
+    adminPassword: {
       type: String,
       required: [true, 'Password must be provided'],
       trim: true,
       select: false,
     },
+
+    adminName: {
+      type: String,
+    
+    },
+
+    adminLocation:{
+      type: String,
+     
+    },
+
+    adminMobileNo:{
+      type: String,
+     
+    },
+
+    adminWhatsappNo:{
+      type: String,
+      required: [true, 'Locatin must be provided'], 
+    },
+
+    adminImagelink: {
+      public_id: String,
+      url: String,  
+     },
+
     verified: {
       type: Boolean,
       default: false,
